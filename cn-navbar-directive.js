@@ -1,8 +1,8 @@
 angular.module('cnNavbar', [])
 
     .directive('cnNavbar', [
-      '$stateParams', 'Api', '$location', 'cnSession', '$window', '$rootScope', 'EVENTS', '$state', 'VENDOR_BASE_URL',
-      function($stateParams, Api, $location, cnSession, $window, $rootScope, EVENTS, $state, VENDOR_BASE_URL) {
+      '$stateParams', 'Api', 'ReportsQuery', '$location', 'cnSession', '$window', '$rootScope', 'EVENTS', '$state', 'VENDOR_BASE_URL', 'ReportUrlBuilder',
+      function($stateParams, Api, ReportsQuery, $location, cnSession, $window, $rootScope, EVENTS, $state, VENDOR_BASE_URL, ReportUrlBuilder) {
         return {
           restrict: 'E',
           replace: true,
@@ -36,7 +36,21 @@ angular.module('cnNavbar', [])
               $scope.currentCompany = cnSession.getCompany();
             }
 
-            if($scope.user) setupCompanies();
+            function getRecentReports() {
+              ReportsQuery.getUsersRecentReports().then(function(reports) {
+                reports.forEach(function(report) {
+                  report.is_template = report.isTemplate;
+                  report.user_data = JSON.parse(report.userData);
+                  report.url = ReportUrlBuilder.build(report);
+                })
+                $scope.recentReports = reports;
+              })
+            }
+
+            if($scope.user) {
+              setupCompanies();
+              getRecentReports();
+            }
 
             $scope.changeCompany = function(company) {
               cnSession.setCompany(company);
@@ -94,6 +108,7 @@ angular.module('cnNavbar', [])
             $rootScope.$on(EVENTS.loginSuccess, function() {
               $scope.user = cnSession.getUser();
               setupCompanies();
+              getRecentReports();
             });
           }
         }
