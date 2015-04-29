@@ -17,8 +17,18 @@
         <li>
           <a id="manage-nav-link" href="/manager/#/groups">Manage</a>
         </li>
-        <li id="analyze-nav-li">
-          <a id="analyze-nav-link" href="/quicksight/#/analytics">Analyze</a>
+        <li id="reports-nav-li" class="dropdown">
+          <a id="reports-dropdown" data-toggle="dropdown">Reports
+            <i class="fa fa-chevron-down"></i>
+          </a>
+          <ul class="dropdown-menu" role="menu">
+            <li>
+              <a href="/manager/#/reports" id="reports-nav-link">Browse All Reports</a>
+            </li>
+            <li>
+              <a href="/quicksight/#/analytics" id="quicksight-nav-link">New Report</a>
+            </li>
+          </ul>
         </li>
 
         <li ng-if="user.isAdmin" class="dropdown">
